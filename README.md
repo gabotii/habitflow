@@ -169,3 +169,4 @@ docs/ARCHITECTURE.md            ADR, modelo de datos, reglas, operación
 - **Retos**: las reglas se bloquean en cuanto empieza el reto o se une otra persona (solo se pueden cambiar nombre y
   descripción); el progreso del día en que alguien abandona no cuenta.
 - **Idioma**: interfaz solo en español.
+<img width="1904" height="903" alt="image" src="https://github.com/user-attachments/assets/03790a37-beb6-4f31-8f77-af389e256009" />
