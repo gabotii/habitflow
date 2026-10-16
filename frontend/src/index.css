@@ -1,0 +1,170 @@
+@import 'tailwindcss';
+@import '@fontsource-variable/manrope';
+
+/*
+ * HabitFlow design tokens. Indigo is the brand (actions, focus, navigation); status colours are reserved for the
+ * state of a day or habit (done / partial / missed) and always ship with an icon and a label. Chart series use the
+ * validated data-viz blue (see src/features/statistics/chart-theme.ts).
+ */
+@theme {
+  --font-sans: 'Manrope Variable', ui-sans-serif, system-ui, sans-serif;
+
+  --color-background: #f6f6fa;
+  --color-surface: #ffffff;
+  --color-foreground: #17162b;
+  --color-muted: #eeeef5;
+  --color-muted-foreground: #565470;
+  --color-border: #e1e0ec;
+  --color-ring: #4f46e5;
+
+  --color-primary: #4f46e5;
+  --color-primary-hover: #4338ca;
+  --color-primary-soft: #ecebfd;
+  --color-primary-foreground: #ffffff;
+
+  /* Streak flame. Text on it uses the dark step for contrast. */
+  --color-streak: #f59e0b;
+  --color-streak-soft: #fef3e2;
+  --color-streak-ink: #92400e;
+
+  --color-success: #15803d;
+  --color-success-soft: #e6f6ea;
+  --color-success-foreground: #ffffff;
+  --color-warning: #b45309;
+  --color-warning-soft: #fdf3e2;
+  --color-danger: #b42318;
+  --color-danger-hover: #912018;
+  --color-danger-soft: #fdecea;
+  --color-danger-foreground: #ffffff;
+
+  --color-sidebar: #17152b;
+  --color-sidebar-foreground: #c8c6e0;
+  --color-sidebar-active: #2a2750;
+
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+}
+
+/* `dark:` follows the resolved theme on <html data-theme> (set by public/theme-init.js and src/lib/theme.ts). */
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+
+/*
+ * Chart colours (read by src/features/statistics/charts.tsx). Series steps validated with the data-viz palette
+ * checker against each mode's card surface: light #2a78d6/#86b6ef on #ffffff, dark #3987e5/#1c5cab on #1a1930.
+ */
+:root {
+  --chart-series: #2a78d6;
+  --chart-series-light: #86b6ef;
+  --chart-grid: #e1e0d9;
+  --chart-axis: #898781;
+  --chart-ink: #17162b;
+  --chart-ink-secondary: #52514e;
+}
+
+/*
+ * Dark theme: its own steps, not an automatic inversion. Text pairs checked for WCAG AA (≥ 4.5:1). The primary gets
+ * lighter for text and focus on dark surfaces, so filled primary/success/danger controls carry dark ink.
+ */
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --color-background: #0f0e1a;
+  --color-surface: #1a1930;
+  --color-foreground: #ecebf7;
+  --color-muted: #24233b;
+  --color-muted-foreground: #a7a5c2;
+  --color-border: #2f2d4a;
+  --color-ring: #818cf8;
+
+  --color-primary: #818cf8;
+  --color-primary-hover: #a5b4fc;
+  --color-primary-soft: #272562;
+  --color-primary-foreground: #17162b;
+
+  --color-streak-soft: #3a2a10;
+  --color-streak-ink: #fbbf24;
+
+  --color-success: #4ade80;
+  --color-success-soft: #12301f;
+  --color-success-foreground: #0b1f13;
+  --color-warning: #fbbf24;
+  --color-warning-soft: #3a2a0e;
+  --color-danger: #f87171;
+  --color-danger-hover: #fca5a5;
+  --color-danger-soft: #3b1618;
+  --color-danger-foreground: #2a0a0a;
+
+  --color-sidebar: #0b0a16;
+  --color-sidebar-active: #24214a;
+
+  --chart-series: #3987e5;
+  --chart-series-light: #1c5cab;
+  --chart-grid: #2c2b45;
+  --chart-axis: #8f8daa;
+  --chart-ink: #ecebf7;
+  --chart-ink-secondary: #c3c2d7;
+}
+
+@layer base {
+  html {
+    color-scheme: light;
+  }
+
+  body {
+    @apply bg-background font-sans text-foreground antialiased;
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-ring;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+/* react-day-picker: only layout variables; day cells are rendered by our own DayButton. */
+.rdp-root {
+  --rdp-accent-color: var(--color-primary);
+  --rdp-day-height: 3.25rem;
+  --rdp-day-width: 100%;
+  --rdp-day_button-height: 3rem;
+  --rdp-day_button-width: 100%;
+  --rdp-day_button-border-radius: 0.75rem;
+  --rdp-selected-border: 2px solid var(--color-primary);
+  width: 100%;
+}
+
+.rdp-root .rdp-months,
+.rdp-root .rdp-month,
+.rdp-root .rdp-month_grid {
+  width: 100%;
+  max-width: none;
+}
+
+.rdp-root .rdp-month_grid {
+  border-collapse: separate;
+  border-spacing: 0.25rem;
+}
+
+.rdp-root .rdp-weekday {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-muted-foreground);
+  text-transform: capitalize;
+}
+
+.rdp-root .rdp-caption_label {
+  font-size: 1.05rem;
+  font-weight: 700;
+  text-transform: capitalize;
+}

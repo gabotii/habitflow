@@ -1,0 +1,63 @@
+# Full stack: PostgreSQL + API + web (nginx). Usage:
+#   cp .env.example .env   # then set real secrets
+#   docker compose up -d --build
+# The app is served at http://localhost:8080 (API under /api, Swagger disabled by default).
+name: habitflow
+
+services:
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: habitflow
+      POSTGRES_USER: habitflow
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U habitflow -d habitflow"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build: ./backend
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-Production}
+      ConnectionStrings__Default: Host=db;Port=5432;Database=habitflow;Username=habitflow;Password=${POSTGRES_PASSWORD};GSS Encryption Mode=Disable
+      # Applies pending (additive) migrations at startup. Review migrations before deploying; see README.
+      Database__MigrateOnStartup: ${MIGRATE_ON_STARTUP:-true}
+      # Only nginx can reach the API (it is not published), so forwarded headers are trusted.
+      ForwardedHeaders__Enabled: "true"
+      AuthCookie__Secure: ${AUTH_COOKIE_SECURE:-true}
+      Swagger__Enabled: ${SWAGGER_ENABLED:-false}
+      RateLimiting__AuthPerMinute: ${AUTH_RATE_LIMIT_PER_MINUTE:-10}
+      Email__Mode: ${EMAIL_MODE:-Disabled}
+      Email__From: ${EMAIL_FROM:-HabitFlow <no-reply@habitflow.local>}
+      Email__PublicBaseUrl: ${PUBLIC_BASE_URL:-http://localhost:8080}
+      Email__SmtpHost: ${SMTP_HOST:-}
+      Email__SmtpPort: ${SMTP_PORT:-587}
+      Email__SmtpUsername: ${SMTP_USERNAME:-}
+      Email__SmtpPassword: ${SMTP_PASSWORD:-}
+      Demo__Password: ${DEMO_PASSWORD:-}
+    volumes:
+      - keys:/app/keys
+    expose:
+      - "8080"
+
+  web:
+    build: ./frontend
+    restart: unless-stopped
+    depends_on:
+      api:
+        condition: service_healthy
+    ports:
+      - "${WEB_PORT:-8080}:80"
+
+volumes:
+  pgdata:
+  keys:

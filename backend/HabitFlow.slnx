@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/HabitFlow.Api/HabitFlow.Api.csproj" />
+    <Project Path="src/HabitFlow.Application/HabitFlow.Application.csproj" />
+    <Project Path="src/HabitFlow.Domain/HabitFlow.Domain.csproj" />
+    <Project Path="src/HabitFlow.Infrastructure/HabitFlow.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/HabitFlow.Tests/HabitFlow.Tests.csproj" />
+  </Folder>
+</Solution>
